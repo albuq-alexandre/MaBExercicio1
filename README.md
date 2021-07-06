@@ -3,8 +3,11 @@ Reinforcement Learning Scenario - MAB - Movielens-25m
 
 To download the dataset files, use this commands on project folder:
 
-``` wget --no-check-certificate https://files.grouplens.org/datasets/movielens/ml-25m.zip
+``` 
+wget --no-check-certificate https://files.grouplens.org/datasets/movielens/ml-25m.zip
+```
 
-and
-
-``` unzip ml-25m.zip
+After downloading, unzip the file:
+```
+unzip ml-25m.zip
+```

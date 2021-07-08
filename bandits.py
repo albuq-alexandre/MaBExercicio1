@@ -3,13 +3,14 @@ class Bandit:
       uniforme
   """
 
-    def __init__(self, movie_ratings: list):
+    def __init__(self, movieId, movie_ratings: list):
         """ Inicia a classe com a distribuição de recompensas baseadas nas avaliacoes do filme.
     """
         self.ratings = movie_ratings
         self.Q_t = 0
         self.t = 0
         self.interact = 0
+        self.movieId = movieId
 
     def pull(self):
         """ Método que define a interação com o bandido. A recompensa é resultante

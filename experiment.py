@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import math
+from numpy.random.mtrand import RandomState
 
 
 def greedy_policy(bandits):
@@ -21,6 +22,21 @@ def random_policy(bandits, seed=42):
     rnd_index = random.choice(range(len(bandits)))
     rnd_bandit = bandits[rnd_index]
     return rnd_bandit, rnd_index
+
+
+def e_greedy_policy(bandits, epsilon=0.1, seed=42):
+    """ Função responsável por escolher o bandido segundo uma estratégia epslon-greedy.
+      Retorna o bandido correspondente à greedy action.
+  """
+    Q_values = [b.Q_t for b in bandits]
+    if RandomState(seed).choice([True, False], p=[epsilon, 1.0 - epsilon]):
+        e_greedy_index = random.choice(range(len(bandits)))
+    else:
+        e_greedy_index = np.argmax(Q_values)
+
+    e_greedy_bandit = bandits[e_greedy_index]
+
+    return e_greedy_bandit, e_greedy_index
 
 
 def UCB_policy(bandits):
@@ -146,3 +162,31 @@ def run_UCB_bandits_experiment(bandits_array, ucb_iterations, c):
     print('Recompensas por arma', sums_of_reward)
     print()
     return ads_selected, sums_of_reward, numbers_of_selections, total_reward, reward_array
+
+
+def run_e_greedy_bandits_experiment(
+        bandits_array, num_experiments, greedy_iterations, epsilon, seed):
+    """ Simula um cenário dos banditos com a escolha e-greedy de ação """
+
+    rewards_array = np.zeros(greedy_iterations)
+
+    for e in np.arange(num_experiments):
+        print(f'Experimento {e}', end='\r')
+        list(map(lambda b: b.reset(), bandits_array))
+        # list(map(lambda b: print(b.Q_t, b.t, end="\r"), bandits_array))
+        # print('\n')
+
+        for n in np.arange(greedy_iterations):
+            # Sempre há escolha da ação greedy.
+            greedy_bandit, greedy_index = e_greedy_policy(bandits_array, epsilon, seed)
+
+            # Realiza a interação com o bandido que corresponde à ação greedy
+            curr_reward = interact_with_bandit(greedy_bandit)
+
+            rewards_array[n] += curr_reward
+        # list(map(lambda b: print(b.Q_t, b.t, end="\r"), bandits_array))
+
+    rewards_array /= num_experiments
+
+    return rewards_array
+

@@ -75,6 +75,39 @@ def mainUCB():
     plt.legend(legends)
     plt.show()
 
+def main_e(num_experiments, num_iterations, epsilon, seed):
+    """ Método principal """
+
+    r = ratings.Ratings()
+    movies_array = random.sample(r.getMovieList(), 10)
+    bandits_array = list(map(lambda movie: bandits.Bandit(movie, r.getRatings(movie)), movies_array))
+
+    rewards_array = experiment.run_e_greedy_bandits_experiment(
+        bandits_array, num_experiments, num_iterations, epsilon, seed)
+
+    # Calculando a recompensa acumulada
+    mean_cumulative_reward = experiment.get_mean_cumulative_reward(rewards_array)
+
+    # Fazendo o plot da expectativa real dos banditos versus a recompensa média
+    # acumulada
+    plt.figure(figsize=(10, 8))
+    plt.plot(mean_cumulative_reward)
+    legends = ['recompensa média acumulada']
+    _max = max([len(x.ratings) for x in bandits_array])
+    for cont, b in enumerate(bandits_array):
+        bandit_real_q = (sum(b.ratings) / _max)
+        plt.plot(np.ones(num_iterations) * bandit_real_q)
+        legends.append(f'Filme {str(movies_array[cont])} - Q = {bandit_real_q:.4f}')
+    plt.xscale('log')
+    plt.xlabel('Número de iterações')
+    plt.ylabel('Recompensa média acumulada')
+    plt.title(f'Plot da recompensa média acumulada em {num_experiments} experimentos')
+    plt.legend(legends)
+    plt.show()
+
+
 
 # main(num_experiments=10000, num_iterations=100, num_explorations=10)
-mainUCB()
+# mainUCB()
+
+main_e(num_experiments=10000, num_iterations=100, epsilon=0.1, seed=42)

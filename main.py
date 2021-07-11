@@ -62,7 +62,6 @@ def plot_comparative(bandits_array, movies_array, mean_cumulative_rewards, num_i
     _max = max([len(x.ratings) for x in bandits_array])
     plt.figure(figsize=(14, 8))
     for p, plot in enumerate(mean_cumulative_rewards):
-        print(lbl_police[p])
         if p%2 == 0:
           plt.plot(plot, linestyle=(0, (1, 1)))
         else:
